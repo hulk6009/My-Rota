@@ -5,6 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ola's Shift Rota</title>
     <style>
+        :root {
+            /* Light mode variables */
+            --bg-color: #f5f7fa;
+            --text-color: #333;
+            --container-bg: white;
+            --header-bg: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --header-text: white;
+            --card-bg: white;
+            --card-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --month-title-color: #2c3e50;
+            --month-year-color: #7f8c8d;
+            --border-color: #eaeaea;
+            --footer-color: #7f8c8d;
+            --note-bg: #fff9e6;
+            --note-border: #f39c12;
+            --unavailable-bg: rgba(0, 0, 0, 0.03);
+            --pay-bg: #e8f5e9;
+            --pay-border: #4caf50;
+            --day-color: #3498db;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                /* Dark mode variables */
+                --bg-color: #121212;
+                --text-color: #e0e0e0;
+                --container-bg: #1e1e1e;
+                --header-bg: linear-gradient(135deg, #4a0d8c 0%, #1a5fd8 100%);
+                --header-text: #e0e0e0;
+                --card-bg: #2d2d2d;
+                --card-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+                --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+                --month-title-color: #e0e0e0;
+                --month-year-color: #a0a0a0;
+                --border-color: #444;
+                --footer-color: #a0a0a0;
+                --note-bg: #332900;
+                --note-border: #b37400;
+                --unavailable-bg: rgba(255, 255, 255, 0.05);
+                --pay-bg: #1b3a1b;
+                --pay-border: #4caf50;
+                --day-color: #3498db;
+            }
+        }
+
+        .dark-mode {
+            /* Dark mode variables */
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --container-bg: #1e1e1e;
+            --header-bg: linear-gradient(135deg, #4a0d8c 0%, #1a5fd8 100%);
+            --header-text: #e0e0e0;
+            --card-bg: #2d2d2d;
+            --card-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+            --card-hover-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+            --month-title-color: #e0e0e0;
+            --month-year-color: #a0a0a0;
+            --border-color: #444;
+            --footer-color: #a0a0a0;
+            --note-bg: #332900;
+            --note-border: #b37400;
+            --unavailable-bg: rgba(255, 255, 255, 0.05);
+            --pay-bg: #1b3a1b;
+            --pay-border: #4caf50;
+            --day-color: #3498db;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -13,26 +81,51 @@
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
+            background-color: var(--bg-color);
+            color: var(--text-color);
             line-height: 1.6;
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
-            background: white;
+            background: var(--container-bg);
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
         
         header {
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            color: white;
+            background: var(--header-bg);
+            color: var(--header-text);
             padding: 30px 20px;
             text-align: center;
+            position: relative;
+        }
+        
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            transition: background 0.3s ease;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.3);
         }
         
         h1 {
@@ -74,8 +167,52 @@
             background-color: #2ecc71;
         }
         
+        .day-color {
+            background-color: var(--day-color);
+        }
+        
         .unavailable-color {
             background-color: #95a5a6;
+        }
+        
+        .pay-section {
+            margin: 20px;
+            padding: 20px;
+            background-color: var(--pay-bg);
+            border-radius: 8px;
+            border-left: 4px solid var(--pay-border);
+        }
+        
+        .pay-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .pay-month {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .pay-month h3 {
+            color: var(--month-title-color);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+        
+        .pay-details {
+            font-size: 0.9rem;
+        }
+        
+        .pay-total {
+            font-weight: bold;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-color);
         }
         
         .month-section {
@@ -85,19 +222,21 @@
         
         .month-title {
             font-size: 1.8rem;
-            color: #2c3e50;
+            color: var(--month-title-color);
             padding-bottom: 10px;
             margin-bottom: 20px;
-            border-bottom: 2px solid #eaeaea;
+            border-bottom: 2px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
         
         .month-year {
             font-size: 1.2rem;
-            color: #7f8c8d;
+            color: var(--month-year-color);
             font-weight: normal;
+            transition: color 0.3s ease;
         }
         
         .shift-grid {
@@ -107,18 +246,18 @@
         }
         
         .shift-card {
-            background: white;
+            background: var(--card-bg);
             border-radius: 8px;
             padding: 15px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            border-left: 4px solid #3498db;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--day-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
             position: relative;
         }
         
         .shift-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--card-hover-shadow);
         }
         
         .shift-card.waking-night {
@@ -127,6 +266,10 @@
         
         .shift-card.day-sleep {
             border-left-color: #2ecc71;
+        }
+        
+        .shift-card.day {
+            border-left-color: var(--day-color);
         }
         
         .shift-card.unavailable {
@@ -140,11 +283,12 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: rgba(0, 0, 0, 0.03);
+            background-color: var(--unavailable-bg);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: background-color 0.3s ease;
         }
         
         .unavailable-text {
@@ -160,8 +304,9 @@
         .date {
             font-weight: bold;
             font-size: 1.1rem;
-            color: #2c3e50;
+            color: var(--month-title-color);
             margin-bottom: 5px;
+            transition: color 0.3s ease;
         }
         
         .unavailable .date,
@@ -169,12 +314,13 @@
         .unavailable .shift-type,
         .unavailable .shift-time {
             text-decoration: line-through;
-            color: #7f8c8d;
+            color: var(--month-year-color);
         }
         
         .day {
-            color: #7f8c8d;
+            color: var(--month-year-color);
             font-size: 0.9rem;
+            transition: color 0.3s ease;
         }
         
         .shift-type {
@@ -187,45 +333,59 @@
         }
         
         .waking-night .shift-type {
-            background-color: #ffeaea;
-            color: #c0392b;
+            background-color: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
         }
         
         .day-sleep .shift-type {
-            background-color: #e8f8ef;
-            color: #27ae60;
+            background-color: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+        }
+        
+        .day .shift-type {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: var(--day-color);
         }
         
         .unavailable .shift-type {
-            background-color: #ecf0f1;
-            color: #7f8c8d;
+            background-color: rgba(149, 165, 166, 0.2);
+            color: var(--month-year-color);
         }
         
         .shift-time {
             margin-top: 8px;
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: var(--month-year-color);
+            transition: color 0.3s ease;
+        }
+        
+        .shift-pay {
+            margin-top: 8px;
+            font-weight: bold;
+            color: var(--month-title-color);
         }
         
         footer {
             text-align: center;
             padding: 20px;
             margin-top: 30px;
-            color: #7f8c8d;
+            color: var(--footer-color);
             font-size: 0.9rem;
-            border-top: 1px solid #eaeaea;
+            border-top: 1px solid var(--border-color);
+            transition: color 0.3s ease, border-color 0.3s ease;
         }
         
         .availability-note {
             text-align: center;
             margin: 20px 0;
             padding: 15px;
-            background-color: #fff9e6;
+            background-color: var(--note-bg);
             border-radius: 8px;
-            border-left: 4px solid #f39c12;
+            border-left: 4px solid var(--note-border);
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
         
         @media (max-width: 768px) {
@@ -239,6 +399,17 @@
             
             .month-title {
                 font-size: 1.5rem;
+            }
+            
+            .theme-toggle {
+                position: relative;
+                top: 0;
+                right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .pay-summary {
+                grid-template-columns: 1fr;
             }
         }
         
@@ -260,16 +431,23 @@
 <body>
     <div class="container">
         <header>
-            <h1>Ola's Shift Rota</h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <h1>Ola's Shift Rota & Pay Calculator</h1>
             <p class="subtitle">September 2025 - November 2025</p>
             <div class="legend">
                 <div class="legend-item">
                     <div class="color-box waking-night-color"></div>
-                    <span>Waking Nights</span>
+                    <span>Waking Nights (£203)</span>
                 </div>
                 <div class="legend-item">
                     <div class="color-box day-sleep-color"></div>
-                    <span>Day + Sleep</span>
+                    <span>Day + Sleep (£244.4)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box day-color"></div>
+                    <span>Day (£124.8)</span>
                 </div>
                 <div class="legend-item">
                     <div class="color-box unavailable-color"></div>
@@ -277,7 +455,7 @@
                 </div>
             </div>
         </header>
-        
+                
         <div class="availability-note">
             <p><strong>Note:</strong> The following days are marked as unavailable: 30 Sep, 3 Oct, 18 Oct, 21 Oct, 22 Oct</p>
         </div>
@@ -285,6 +463,30 @@
         <div class="month-section">
             <h2 class="month-title">September <span class="month-year">2025</span></h2>
             <div class="shift-grid">
+                <div class="shift-card day">
+                    <div class="date">20 Sep <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day</div>
+                    <div class="shift-time">10 am – 8 pm</div>
+                    <div class="shift-pay">£124.8</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">24 Sep <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">27 Sep <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
+                </div>
+                <div class="shift-card day">
+                    <div class="date">28 Sep <span class="day">(Sunday)</span></div>
+                    <div class="shift-type">Day</div>
+                    <div class="shift-time">10 am – 8 pm</div>
+                    <div class="shift-pay">£124.8</div>
+                </div>
                 <div class="shift-card day-sleep unavailable">
                     <div class="unavailable-overlay">
                         <div class="unavailable-text">UNAVAILABLE</div>
@@ -292,6 +494,7 @@
                     <div class="date">30 Sep <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
             </div>
         </div>
@@ -303,6 +506,7 @@
                     <div class="date">1 Oct <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep unavailable">
                     <div class="unavailable-overlay">
@@ -311,46 +515,55 @@
                     <div class="date">3 Oct <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">4 Oct <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">7 Oct <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">8 Oct <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">10 Oct <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">11 Oct <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">14 Oct <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">15 Oct <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">17 Oct <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep unavailable">
                     <div class="unavailable-overlay">
@@ -359,6 +572,7 @@
                     <div class="date">18 Oct <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep unavailable">
                     <div class="unavailable-overlay">
@@ -367,6 +581,7 @@
                     <div class="date">21 Oct <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night unavailable">
                     <div class="unavailable-overlay">
@@ -375,31 +590,37 @@
                     <div class="date">22 Oct <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">24 Oct <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">25 Oct <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">28 Oct <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">29 Oct <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">31 Oct <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
             </div>
         </div>
@@ -411,88 +632,183 @@
                     <div class="date">1 Nov <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">4 Nov <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">5 Nov <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">7 Nov <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">8 Nov <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">11 Nov <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">12 Nov <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">15 Nov <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">18 Nov <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">19 Nov <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">21 Nov <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">22 Nov <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">25 Nov <span class="day">(Tuesday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card waking-night">
                     <div class="date">26 Nov <span class="day">(Wednesday)</span></div>
                     <div class="shift-type">Waking Nights</div>
                     <div class="shift-time">8 pm – 10 am</div>
+                    <div class="shift-pay">£203</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">28 Nov <span class="day">(Friday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
                 <div class="shift-card day-sleep">
                     <div class="date">29 Nov <span class="day">(Saturday)</span></div>
                     <div class="shift-type">Day + Sleep</div>
                     <div class="shift-time">10 am – 10 am (next day)</div>
+                    <div class="shift-pay">£244.4</div>
                 </div>
+            </div>
+        </div>
+        <div class="pay-section">
+            <h2>Monthly Pay Summary</h2>
+            <p><strong>Payment Rule:</strong> Paid on the 17th for shifts worked from 18th of previous month to 17th of current month</p>
+            
+            <div class="pay-summary">
+                <div class="pay-month">
+                    <h3>17 September 2025</h3>
+                    <div class="pay-details">
+                        <p>No shifts in payment period</p>
+                        <p class="pay-total">Total: £0</p>
+                    </div>
+                </div>
+                
+                <div class="pay-month">
+                    <h3>17 October 2025</h3>
+                    <div class="pay-details">
+                        <p>Day: 2 shifts × £124.8 = £249.6</p>
+                        <p>Waking Nights: 4 shifts × £203 = £812</p>
+                        <p>Day + Sleep: 7 shifts × £244.4 = £1,710.8</p>
+                        <p class="pay-total">Total: £2,772.4</p>
+                    </div>
+                </div>
+                
+                <div class="pay-month">
+                    <h3>17 November 2025</h3>
+                    <div class="pay-details">
+                        <p>Waking Nights: 3 shifts × £203 = £609</p>
+                        <p>Day + Sleep: 10 shifts × £244.4 = £2,444</p>
+                        <p class="pay-total">Total: £3,053</p>
+                    </div>
+                </div>
+                
+                <div class="pay-month">
+                    <h3>17 December 2025</h3>
+                    <div class="pay-details">
+                        <p>Waking Nights: 2 shifts × £203 = £406</p>
+                        <p>Day + Sleep: 6 shifts × £244.4 = £1,466.4</p>
+                        <p class="pay-total">Total: £1,872.4</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border-color);">
+                <h3>Total Expected Earnings (Sep-Dec 2025): £7,697.8</h3>
             </div>
         </div>
         
         <footer>
-            <p>Ola's Shift Rota &copy; 2025</p>
+            <p>Ola's Shift Rota & Pay Calculator &copy; 2025</p>
         </footer>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const body = document.body;
+            
+            // Check for saved theme preference or use device preference
+            const savedTheme = localStorage.getItem('theme');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            
+            if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                body.classList.add('dark-mode');
+                themeIcon.textContent = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                themeIcon.textContent = '🌙';
+            }
+            
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', function() {
+                body.classList.toggle('dark-mode');
+                
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                    themeIcon.textContent = '☀️';
+                } else {
+                    localStorage.setItem('theme', 'light');
+                    themeIcon.textContent = '🌙';
+                }
+            });
+        });
+    </script>
 </body>
 </html>
