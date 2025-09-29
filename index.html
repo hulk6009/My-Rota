@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ola's Shift Rota</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .color-box {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+        }
+        
+        .waking-night-color {
+            background-color: #e74c3c;
+        }
+        
+        .day-sleep-color {
+            background-color: #2ecc71;
+        }
+        
+        .unavailable-color {
+            background-color: #95a5a6;
+        }
+        
+        .month-section {
+            margin: 30px 0;
+            padding: 0 20px;
+        }
+        
+        .month-title {
+            font-size: 1.8rem;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .month-year {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            font-weight: normal;
+        }
+        
+        .shift-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+        
+        .shift-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            border-left: 4px solid #3498db;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .shift-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .shift-card.waking-night {
+            border-left-color: #e74c3c;
+        }
+        
+        .shift-card.day-sleep {
+            border-left-color: #2ecc71;
+        }
+        
+        .shift-card.unavailable {
+            border-left-color: #95a5a6;
+            opacity: 0.7;
+        }
+        
+        .unavailable-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.03);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .unavailable-text {
+            background-color: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transform: rotate(-5deg);
+        }
+        
+        .date {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        
+        .unavailable .date,
+        .unavailable .day,
+        .unavailable .shift-type,
+        .unavailable .shift-time {
+            text-decoration: line-through;
+            color: #7f8c8d;
+        }
+        
+        .day {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .shift-type {
+            margin-top: 10px;
+            font-weight: 600;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+        
+        .waking-night .shift-type {
+            background-color: #ffeaea;
+            color: #c0392b;
+        }
+        
+        .day-sleep .shift-type {
+            background-color: #e8f8ef;
+            color: #27ae60;
+        }
+        
+        .unavailable .shift-type {
+            background-color: #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        .shift-time {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eaeaea;
+        }
+        
+        .availability-note {
+            text-align: center;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #f39c12;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .shift-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .month-title {
+                font-size: 1.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                border-radius: 0;
+            }
+            
+            body {
+                padding: 10px;
+            }
+            
+            .month-section {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Ola's Shift Rota</h1>
+            <p class="subtitle">September 2025 - November 2025</p>
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="color-box waking-night-color"></div>
+                    <span>Waking Nights</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box day-sleep-color"></div>
+                    <span>Day + Sleep</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box unavailable-color"></div>
+                    <span>Unavailable</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="availability-note">
+            <p><strong>Note:</strong> The following days are marked as unavailable: 30 Sep, 3 Oct, 18 Oct, 21 Oct, 22 Oct</p>
+        </div>
+        
+        <div class="month-section">
+            <h2 class="month-title">September <span class="month-year">2025</span></h2>
+            <div class="shift-grid">
+                <div class="shift-card day-sleep unavailable">
+                    <div class="unavailable-overlay">
+                        <div class="unavailable-text">UNAVAILABLE</div>
+                    </div>
+                    <div class="date">30 Sep <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="month-section">
+            <h2 class="month-title">October <span class="month-year">2025</span></h2>
+            <div class="shift-grid">
+                <div class="shift-card waking-night">
+                    <div class="date">1 Oct <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep unavailable">
+                    <div class="unavailable-overlay">
+                        <div class="unavailable-text">UNAVAILABLE</div>
+                    </div>
+                    <div class="date">3 Oct <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">4 Oct <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">7 Oct <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">8 Oct <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">10 Oct <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">11 Oct <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">14 Oct <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">15 Oct <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">17 Oct <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep unavailable">
+                    <div class="unavailable-overlay">
+                        <div class="unavailable-text">UNAVAILABLE</div>
+                    </div>
+                    <div class="date">18 Oct <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep unavailable">
+                    <div class="unavailable-overlay">
+                        <div class="unavailable-text">UNAVAILABLE</div>
+                    </div>
+                    <div class="date">21 Oct <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night unavailable">
+                    <div class="unavailable-overlay">
+                        <div class="unavailable-text">UNAVAILABLE</div>
+                    </div>
+                    <div class="date">22 Oct <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">24 Oct <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">25 Oct <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">28 Oct <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">29 Oct <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">31 Oct <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="month-section">
+            <h2 class="month-title">November <span class="month-year">2025</span></h2>
+            <div class="shift-grid">
+                <div class="shift-card day-sleep">
+                    <div class="date">1 Nov <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">4 Nov <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">5 Nov <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">7 Nov <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">8 Nov <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">11 Nov <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">12 Nov <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">15 Nov <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">18 Nov <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">19 Nov <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">21 Nov <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">22 Nov <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">25 Nov <span class="day">(Tuesday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card waking-night">
+                    <div class="date">26 Nov <span class="day">(Wednesday)</span></div>
+                    <div class="shift-type">Waking Nights</div>
+                    <div class="shift-time">8 pm – 10 am</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">28 Nov <span class="day">(Friday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+                <div class="shift-card day-sleep">
+                    <div class="date">29 Nov <span class="day">(Saturday)</span></div>
+                    <div class="shift-type">Day + Sleep</div>
+                    <div class="shift-time">10 am – 10 am (next day)</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Ola's Shift Rota &copy; 2025</p>
+        </footer>
+    </div>
+</body>
+</html>
