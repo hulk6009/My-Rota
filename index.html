@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ola's Shift Rota</title>
+    <title>Ola's Shift Rota & Pay Calculator</title>
     <style>
         :root {
             /* Light mode variables */
@@ -808,6 +808,60 @@
                     themeIcon.textContent = '🌙';
                 }
             });
+            
+            // Function to hide past shifts
+            function hidePastShifts() {
+                const today = new Date();
+                today.setHours(0, 0, 0, 0); // Set to start of day for accurate comparison
+                
+                const shiftCards = document.querySelectorAll('.shift-card');
+                
+                shiftCards.forEach(card => {
+                    const dateText = card.querySelector('.date').textContent;
+                    // Extract date from text like "20 Sep (Saturday)"
+                    const dateMatch = dateText.match(/(\d{1,2})\s+(\w+)/);
+                    
+                    if (dateMatch) {
+                        const day = parseInt(dateMatch[1]);
+                        const month = dateMatch[2];
+                        
+                        // Convert month name to number (0-11)
+                        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                                           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                        const monthIndex = monthNames.indexOf(month);
+                        
+                        if (monthIndex !== -1) {
+                            // Create date object (using current year)
+                            const shiftDate = new Date(today.getFullYear(), monthIndex, day);
+                            
+                            // Hide if shift date is in the past
+                            if (shiftDate < today) {
+                                card.style.display = 'none';
+                            }
+                        }
+                    }
+                });
+                
+                // Hide empty months
+                hideEmptyMonths();
+            }
+            
+            // Function to hide months with no visible shifts
+            function hideEmptyMonths() {
+                const monthSections = document.querySelectorAll('.month-section');
+                
+                monthSections.forEach(section => {
+                    const shiftGrid = section.querySelector('.shift-grid');
+                    const visibleShifts = shiftGrid.querySelectorAll('.shift-card[style*="display: block"], .shift-card:not([style*="display"])');
+                    
+                    if (visibleShifts.length === 0) {
+                        section.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Call the function to hide past shifts
+            hidePastShifts();
         });
     </script>
 </body>
